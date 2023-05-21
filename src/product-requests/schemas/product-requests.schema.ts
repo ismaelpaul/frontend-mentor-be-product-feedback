@@ -30,9 +30,17 @@ class Comments {
 export class ProductRequests {
   @Prop({ type: String, required: true })
   title: string;
+
+  @Prop({ type: String, required: true })
   category: string;
+
+  @Prop({ type: Number, required: true })
   upvotes: number;
+
+  @Prop({ type: String, required: true })
   status: string;
+
+  @Prop({ type: String, required: true })
   description: string;
 
   @Prop()
