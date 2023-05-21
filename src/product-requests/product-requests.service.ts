@@ -25,4 +25,9 @@ export class ProductRequestsService {
 
     return singleProductRequest;
   }
+
+  async create(productRequest: ProductRequests): Promise<ProductRequests> {
+    const res = await this.productRequestsModel.create(productRequest);
+    return res;
+  }
 }
