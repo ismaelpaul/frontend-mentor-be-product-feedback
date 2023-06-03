@@ -27,7 +27,10 @@ export class ProductRequestsService {
   }
 
   async create(productRequest: ProductRequests): Promise<ProductRequests> {
-    const res = await this.productRequestsModel.create(productRequest);
-    return res;
+    return await this.productRequestsModel.create(productRequest);
+  }
+
+  async deleteById(id: string): Promise<ProductRequests> {
+    return await this.productRequestsModel.findByIdAndDelete(id);
   }
 }
