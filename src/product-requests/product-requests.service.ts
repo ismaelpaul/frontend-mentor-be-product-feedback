@@ -10,8 +10,39 @@ export class ProductRequestsService {
     private productRequestsModel: mongoose.Model<ProductRequests>,
   ) {}
 
-  async findAll(): Promise<ProductRequests[]> {
-    const productRequests = await this.productRequestsModel.find();
+  async findAll(
+    sortingOption: string,
+    category: string,
+  ): Promise<ProductRequests[]> {
+    let sortCriteria = {};
+
+    switch (sortingOption) {
+      case 'mostUpvotes':
+        sortCriteria = { upvotes: -1 };
+        break;
+      case 'mostComments':
+        sortCriteria = { commentsCount: -1 };
+        break;
+      case 'leastUpvotes':
+        sortCriteria = { upvotes: 1 };
+        break;
+      case 'leastComments':
+        sortCriteria = { commentsCount: 1 };
+        break;
+      default:
+        sortCriteria = { createdAt: -1 };
+    }
+
+    const matchCriteria: any = {};
+
+    if (category !== 'all') {
+      matchCriteria.category = category.toLowerCase();
+    }
+
+    const productRequests = await this.productRequestsModel
+      .find(matchCriteria)
+      .sort(sortCriteria)
+      .exec();
 
     return productRequests;
   }
@@ -26,7 +57,9 @@ export class ProductRequestsService {
     return singleProductRequest;
   }
 
-  async create(productRequest: ProductRequests): Promise<ProductRequests> {
+  async addProductRequest(
+    productRequest: ProductRequests,
+  ): Promise<ProductRequests> {
     return await this.productRequestsModel.create(productRequest);
   }
 
