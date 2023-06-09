@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ProductRequestsService } from './product-requests.service';
 import { ProductRequests } from './schemas/product-requests.schema';
 import { CreateProductRequestDto } from './dto/create-product-request.dto';
@@ -8,8 +16,23 @@ export class ProductRequestsController {
   constructor(private productRequestsService: ProductRequestsService) {}
 
   @Get()
-  async getAllProductRequests(): Promise<ProductRequests[]> {
-    return this.productRequestsService.findAll();
+  async getAllProductRequests(
+    @Query('sort') sortingOption?: string,
+    @Query('category') category?: string,
+  ): Promise<ProductRequests[]> {
+    let categoryLowerCase;
+
+    if (category === 'UI' || category === 'UX') {
+      categoryLowerCase = category.toLowerCase();
+    } else {
+      categoryLowerCase =
+        category.charAt(0).toLocaleLowerCase() + category.slice(1);
+    }
+
+    return this.productRequestsService.findAll(
+      sortingOption,
+      categoryLowerCase,
+    );
   }
 
   @Get(':id')
@@ -24,7 +47,7 @@ export class ProductRequestsController {
     @Body()
     productRequest: CreateProductRequestDto,
   ): Promise<ProductRequests> {
-    return this.productRequestsService.create(productRequest);
+    return this.productRequestsService.addProductRequest(productRequest);
   }
 
   @Delete(':id')
