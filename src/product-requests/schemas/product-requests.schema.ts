@@ -1,13 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-class User {
+export class User {
   @Prop({ type: String, required: true })
   image: string;
   name: string;
   username: string;
 }
 
-class Replies {
+export class Replies {
   @Prop({ type: String, required: true })
   content: string;
   replyingTo: string;
@@ -16,7 +16,7 @@ class Replies {
   user: User;
 }
 
-class Comments {
+export class Comments {
   @Prop()
   content: string;
   user: User;
