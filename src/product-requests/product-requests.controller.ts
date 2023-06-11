@@ -3,12 +3,14 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
 import { ProductRequestsService } from './product-requests.service';
-import { ProductRequests } from './schemas/product-requests.schema';
+import { Comments, ProductRequests } from './schemas/product-requests.schema';
 import { CreateProductRequestDto } from './dto/create-product-request.dto';
 
 @Controller('product-requests')
@@ -22,7 +24,7 @@ export class ProductRequestsController {
   ): Promise<ProductRequests[]> {
     let categoryLowerCase;
 
-    if (category === 'UI' || category === 'UX') {
+    if ((category && category === 'UI') || category === 'UX') {
       categoryLowerCase = category.toLowerCase();
     } else {
       categoryLowerCase =
@@ -48,6 +50,24 @@ export class ProductRequestsController {
     productRequest: CreateProductRequestDto,
   ): Promise<ProductRequests> {
     return this.productRequestsService.addProductRequest(productRequest);
+  }
+
+  @Patch(':id')
+  async addComment(
+    @Param('id') id: string,
+    @Body() comment: Comments,
+  ): Promise<ProductRequests> {
+    try {
+      const updatedProductRequest =
+        await this.productRequestsService.addComment(id, comment);
+
+      return updatedProductRequest;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new NotFoundException('Product request not found');
+      }
+      throw error;
+    }
   }
 
   @Delete(':id')
