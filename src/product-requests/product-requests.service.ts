@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { ProductRequests } from './schemas/product-requests.schema';
+import { Comments, ProductRequests } from './schemas/product-requests.schema';
 import * as mongoose from 'mongoose';
 
 @Injectable()
@@ -61,6 +61,19 @@ export class ProductRequestsService {
     productRequest: ProductRequests,
   ): Promise<ProductRequests> {
     return await this.productRequestsModel.create(productRequest);
+  }
+
+  async addComment(id: string, comment: Comments): Promise<ProductRequests> {
+    const productRequest = await this.productRequestsModel.findOneAndUpdate(
+      { _id: id },
+      { $push: { comments: comment } },
+      { new: true },
+    );
+
+    if (!productRequest) {
+      throw new NotFoundException('Product request not found');
+    }
+    return productRequest;
   }
 
   async deleteById(id: string): Promise<ProductRequests> {
