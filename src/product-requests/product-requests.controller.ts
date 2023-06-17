@@ -52,7 +52,7 @@ export class ProductRequestsController {
     return this.productRequestsService.addProductRequest(productRequest);
   }
 
-  @Patch(':id')
+  @Patch(':id/comments')
   async addComment(
     @Param('id') id: string,
     @Body() comment: Comments,
@@ -60,6 +60,23 @@ export class ProductRequestsController {
     try {
       const updatedProductRequest =
         await this.productRequestsService.addComment(id, comment);
+      return updatedProductRequest;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new NotFoundException('Product request not found');
+      }
+      throw error;
+    }
+  }
+
+  @Patch(':id/upvotes')
+  async updateUpvotesProductRequest(
+    @Param('id') id: string,
+    @Body() { upvotes }: { upvotes: number },
+  ): Promise<ProductRequests> {
+    try {
+      const updatedProductRequest =
+        await this.productRequestsService.updateUpvotes(id, upvotes);
 
       return updatedProductRequest;
     } catch (error) {
