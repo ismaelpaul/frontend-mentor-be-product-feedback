@@ -76,6 +76,20 @@ export class ProductRequestsService {
     return productRequest;
   }
 
+  async updateUpvotes(id: string, vote: number): Promise<ProductRequests> {
+    const productRequest = await this.productRequestsModel.findByIdAndUpdate(
+      { _id: id },
+      { $inc: { upvotes: vote } },
+      { new: true },
+    );
+
+    if (!productRequest) {
+      throw new NotFoundException('Product request not found');
+    }
+
+    return productRequest;
+  }
+
   async deleteById(id: string): Promise<ProductRequests> {
     return await this.productRequestsModel.findByIdAndDelete(id);
   }
