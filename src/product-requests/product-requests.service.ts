@@ -63,6 +63,27 @@ export class ProductRequestsService {
     return await this.productRequestsModel.create(productRequest);
   }
 
+  async updateProductRequest(
+    id: string,
+    updatedProductRequest: ProductRequests,
+  ): Promise<ProductRequests> {
+    console.log(id, '<<<< id');
+    console.log(updatedProductRequest, '<<<< product request');
+
+    const existingProductRequest =
+      await this.productRequestsModel.findByIdAndUpdate(
+        id,
+        updatedProductRequest,
+        { new: true },
+      );
+
+    if (!existingProductRequest) {
+      throw new Error(`Product request with ID ${id} not found.`);
+    }
+
+    return existingProductRequest;
+  }
+
   async addComment(id: string, comment: Comments): Promise<ProductRequests> {
     const productRequest = await this.productRequestsModel.findOneAndUpdate(
       { _id: id },
