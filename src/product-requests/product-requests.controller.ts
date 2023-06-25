@@ -52,6 +52,24 @@ export class ProductRequestsController {
     return this.productRequestsService.addProductRequest(productRequest);
   }
 
+  @Patch(':id')
+  async updateProductRequest(
+    @Param('id') id: string,
+    @Body() updatedProductRequest: ProductRequests,
+  ): Promise<ProductRequests> {
+    const updatedRequest =
+      await this.productRequestsService.updateProductRequest(
+        id,
+        updatedProductRequest,
+      );
+
+    if (!updatedRequest) {
+      throw new NotFoundException(`Product request with ID ${id} not found.`);
+    }
+
+    return updatedRequest;
+  }
+
   @Patch(':id/comments')
   async addComment(
     @Param('id') id: string,
