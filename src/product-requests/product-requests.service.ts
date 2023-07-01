@@ -67,9 +67,6 @@ export class ProductRequestsService {
     id: string,
     updatedProductRequest: ProductRequests,
   ): Promise<ProductRequests> {
-    console.log(id, '<<<< id');
-    console.log(updatedProductRequest, '<<<< product request');
-
     const existingProductRequest =
       await this.productRequestsModel.findByIdAndUpdate(
         id,
