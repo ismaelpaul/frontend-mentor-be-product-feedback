@@ -40,8 +40,25 @@ export class ProductRequestsService {
     }
 
     const productRequests = await this.productRequestsModel
-      .find(matchCriteria)
-      .sort(sortCriteria)
+      .aggregate([
+        {
+          $match: matchCriteria,
+        },
+        {
+          $addFields: {
+            commentsCount: {
+              $cond: {
+                if: { $isArray: '$comments' },
+                then: { $size: '$comments' },
+                else: 0,
+              },
+            },
+          },
+        },
+        {
+          $sort: sortCriteria,
+        },
+      ])
       .exec();
 
     return productRequests;
